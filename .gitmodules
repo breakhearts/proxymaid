@@ -1,0 +1,6 @@
+[submodule "proxymaid/proxymaid/common"]
+	path = proxymaid/proxymaid/common
+	url = https://github.com/breakhearts/maid-common.git
+[submodule "proxymaid/common"]
+	path = proxymaid/common
+	url = https://github.com/breakhearts/maid-common.git
