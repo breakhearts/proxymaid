@@ -1,5 +1,5 @@
 service ProxyPool{
-    void spot_proxy(1:string proxy_url, 2:i32 port, 3:string country),
+    void spot_proxy(1:string ip, 2:i32 port, 3:string country),
     string req_proxy(1:string url),
     void free_proxy(1:string proxy_url, 2:double latency)
 }

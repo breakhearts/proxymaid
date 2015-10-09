@@ -12,6 +12,7 @@ class TestClass:
         proxypool.add_proxy(p2)
         proxypool.add_proxy(p3)
         assert proxypool.count() == 3
+        assert proxypool.has_proxy(p1.proxy_url())
         proxypool.del_proxy(p1.proxy_url())
         assert proxypool.count() == 2
         proxypool.del_proxy(p2.proxy_url())

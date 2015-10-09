@@ -18,10 +18,10 @@ except:
 
 
 class Iface:
-  def spot_proxy(self, proxy_url, port, country):
+  def spot_proxy(self, ip, port, country):
     """
     Parameters:
-     - proxy_url
+     - ip
      - port
      - country
     """
@@ -50,20 +50,20 @@ class Client(Iface):
       self._oprot = oprot
     self._seqid = 0
 
-  def spot_proxy(self, proxy_url, port, country):
+  def spot_proxy(self, ip, port, country):
     """
     Parameters:
-     - proxy_url
+     - ip
      - port
      - country
     """
-    self.send_spot_proxy(proxy_url, port, country)
+    self.send_spot_proxy(ip, port, country)
     self.recv_spot_proxy()
 
-  def send_spot_proxy(self, proxy_url, port, country):
+  def send_spot_proxy(self, ip, port, country):
     self._oprot.writeMessageBegin('spot_proxy', TMessageType.CALL, self._seqid)
     args = spot_proxy_args()
-    args.proxy_url = proxy_url
+    args.ip = ip
     args.port = port
     args.country = country
     args.write(self._oprot)
@@ -174,7 +174,7 @@ class Processor(Iface, TProcessor):
     args.read(iprot)
     iprot.readMessageEnd()
     result = spot_proxy_result()
-    self._handler.spot_proxy(args.proxy_url, args.port, args.country)
+    self._handler.spot_proxy(args.ip, args.port, args.country)
     oprot.writeMessageBegin("spot_proxy", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
@@ -208,20 +208,20 @@ class Processor(Iface, TProcessor):
 class spot_proxy_args:
   """
   Attributes:
-   - proxy_url
+   - ip
    - port
    - country
   """
 
   thrift_spec = (
     None, # 0
-    (1, TType.STRING, 'proxy_url', None, None, ), # 1
+    (1, TType.STRING, 'ip', None, None, ), # 1
     (2, TType.I32, 'port', None, None, ), # 2
     (3, TType.STRING, 'country', None, None, ), # 3
   )
 
-  def __init__(self, proxy_url=None, port=None, country=None,):
-    self.proxy_url = proxy_url
+  def __init__(self, ip=None, port=None, country=None,):
+    self.ip = ip
     self.port = port
     self.country = country
 
@@ -236,7 +236,7 @@ class spot_proxy_args:
         break
       if fid == 1:
         if ftype == TType.STRING:
-          self.proxy_url = iprot.readString();
+          self.ip = iprot.readString();
         else:
           iprot.skip(ftype)
       elif fid == 2:
@@ -259,9 +259,9 @@ class spot_proxy_args:
       oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
       return
     oprot.writeStructBegin('spot_proxy_args')
-    if self.proxy_url is not None:
-      oprot.writeFieldBegin('proxy_url', TType.STRING, 1)
-      oprot.writeString(self.proxy_url)
+    if self.ip is not None:
+      oprot.writeFieldBegin('ip', TType.STRING, 1)
+      oprot.writeString(self.ip)
       oprot.writeFieldEnd()
     if self.port is not None:
       oprot.writeFieldBegin('port', TType.I32, 2)
@@ -280,7 +280,7 @@ class spot_proxy_args:
 
   def __hash__(self):
     value = 17
-    value = (value * 31) ^ hash(self.proxy_url)
+    value = (value * 31) ^ hash(self.ip)
     value = (value * 31) ^ hash(self.port)
     value = (value * 31) ^ hash(self.country)
     return value

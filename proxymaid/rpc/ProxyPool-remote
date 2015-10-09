@@ -24,7 +24,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print('Usage: ' + sys.argv[0] + ' [-h host[:port]] [-u url] [-f[ramed]] [-s[sl]] function [arg1 [arg2...]]')
   print('')
   print('Functions:')
-  print('  void spot_proxy(string proxy_url, i32 port, string country)')
+  print('  void spot_proxy(string ip, i32 port, string country)')
   print('  string req_proxy(string url)')
   print('  void free_proxy(string proxy_url, double latency)')
   print('')

@@ -72,6 +72,9 @@ class ProxyPool(object):
         if proxy_url in self.proxy_meta_map:
             del self.proxy_meta_map[proxy_url]
 
+    def has_proxy(self, proxy_url):
+        return proxy_url in self.proxy_meta_map
+
     def req_proxy(self, url):
         from urlparse import urlparse
         netloc = urlparse(url).netloc
