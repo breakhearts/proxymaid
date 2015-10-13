@@ -1,6 +1,27 @@
-from proxymaid.proxypool import Proxy, ProxyPool
+from proxymaid.proxy import Proxy, ProxyPool, ProxyModel, dbhelper
 
-class TestClass:
+class TestPorxyModel:
+    def test_op(self):
+        dbhelper.create_tables()
+        p = ProxyModel(ip="127.0.0.1", port=88888)
+        try:
+            p.insert()
+        except:
+            pass
+        t = ProxyModel.load_all()
+        p = t[-1]
+        proxy_count = len(t)
+        assert p.ip == "127.0.0.1" and p.port == 88888
+        p = ProxyModel.load("127.0.0.1", 88888)
+        assert p.ip == "127.0.0.1" and p.port == 88888
+        p.port = 99999
+        p.update()
+        p = ProxyModel.load_all()[-1]
+        assert p.ip == "127.0.0.1" and p.port == 99999
+        p.delete()
+        assert proxy_count - 1 == len(ProxyModel.load_all())
+
+class TestProxyPool:
 
     def test_add_del(self):
         proxypool = ProxyPool()

@@ -1,5 +1,13 @@
 from Queue import Queue, PriorityQueue
 from datetime import datetime
+from common.model import DBHelper
+import config
+from sqlalchemy import Column, String, Float, Integer
+from common.utility import wise_mk_dir_for_file
+
+wise_mk_dir_for_file(config.DBPATH)
+dbhelper = DBHelper(config.DBNAME)
+
 class Proxy(object):
     def __init__(self, ip, port, country = "N/A"):
         self.ip = ip
@@ -15,6 +23,36 @@ class Proxy(object):
 
     def proxy_url(self):
         return Proxy.make_proxy_url(self.ip, self.port)
+
+class ProxyModel(dbhelper.get_base_class()):
+    __tablename__ = "proxy"
+    id = Column(Integer, primary_key=True)
+    ip = Column(String)
+    port = Column(Integer)
+    country = Column(String)
+
+    @staticmethod
+    def load(ip, port):
+        session = dbhelper.create_session()
+        t = session.query(ProxyModel).filter(ProxyModel.ip).filter(ProxyModel.port).first()
+        session.close()
+        return t
+
+    @staticmethod
+    def load_all():
+        session = dbhelper.create_session()
+        t = session.query(ProxyModel)
+        session.close()
+        return [x for x in t]
+
+    def delete(self):
+        dbhelper.delete_one(ProxyModel, "id", self.id)
+
+    def insert(self):
+        dbhelper.insert_one(self)
+
+    def update(self):
+        dbhelper.update_one(ProxyModel, self, "id", self.id)
 
 class ProxyPool(object):
     class ProxyMeta(object):

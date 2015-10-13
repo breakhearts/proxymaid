@@ -1,4 +1,4 @@
-from proxypool import ProxyPool, Proxy
+from proxy import ProxyPool, Proxy
 from common.logger import Logger
 import settings
 
