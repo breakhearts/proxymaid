@@ -7,7 +7,9 @@ class TestPorxyModel:
         try:
             p.insert()
         except:
-            pass
+            p.ip = "127.0.0.1"
+            p.port = 88888
+            p.update()
         t = ProxyModel.load_all()
         p = t[-1]
         proxy_count = len(t)

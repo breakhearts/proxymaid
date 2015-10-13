@@ -1,5 +1,6 @@
 from proxy import ProxyPool, Proxy
 from common.logger import Logger
+from proxy import ProxyModel
 import settings
 
 logger = Logger(settings.LOG_ROOT, "proxy_pool_service")
