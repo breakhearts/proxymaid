@@ -1,6 +1,5 @@
 from proxy import ProxyPool, Proxy
 from common.logger import Logger
-from proxy import ProxyModel
 import settings
 
 logger = Logger(settings.LOG_ROOT, "proxy_pool_service")
@@ -32,7 +31,7 @@ class ProxyPoolHandler:
 
 def start_proxy_pool_service(**kwargs):
     proxy_pool = ProxyPool(kwargs)
-    import rpc
+    import rpc.ProxyPool
     from thrift.transport import TSocket, TTransport
     from thrift.server import TServer
     from thrift.protocol import TBinaryProtocol
@@ -42,6 +41,6 @@ def start_proxy_pool_service(**kwargs):
     tfactory = TTransport.TBufferedTransportFactory()
     pfactory = TBinaryProtocol.TBinaryProtocolFactory()
     server = TServer.TThreadedServer(processor, transport, tfactory, pfactory)
-    server.serve()
     logger.debug_fun("start proxy pool service ok")
+    server.serve()
 
