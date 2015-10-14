@@ -13,7 +13,6 @@ class Proxy(object):
         self.ip = ip
         self.port = port
         self.country = country
-        self.unavailable_count = 0
 
     def set_country(self, country):
         self.country = country
@@ -78,6 +77,7 @@ class ProxyPool(object):
             self.latency = {}
             # master netloc who are using this proxy
             self.master = None
+            self.unavailable_count = 0
 
     def __init__(self, settings = None):
         self.proxy_queue_set = [
@@ -91,6 +91,10 @@ class ProxyPool(object):
             "max_latency": 5,
             "max_unavailable_count": 3
         }
+        # avoid delay variation, when proxy check failed, only at least one proxy available in the same round, let
+        # proxy.unavailable_count plus one
+        import sys
+        self.last_available_distance = sys.maxint
         if settings:
             self.settings.update(settings)
 
@@ -193,8 +197,10 @@ class ProxyPool(object):
         p = self.proxy_meta_map[proxy_url]
         if available:
             p.unavailable_count = 0
+            self.last_available_distance = 0
         else:
-            p.unavailable_count += 1
+            self.last_available_distance += 1
+            if self.last_available_distance < max(self.count(), self.settings["max_unavailable_count"]):
+                p.unavailable_count += 1
             if p.unavailable_count >= self.settings["max_unavailable_count"]:
                 self.del_proxy(proxy_url)
-
