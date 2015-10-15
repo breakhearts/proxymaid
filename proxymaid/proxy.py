@@ -1,12 +1,12 @@
 from Queue import Queue, PriorityQueue
 from datetime import datetime
 from common.model import DBHelper
-import config
+import settings
 from sqlalchemy import Column, String, Integer
 from common.utility import wise_mk_dir_for_file
 
-wise_mk_dir_for_file(config.DBPATH)
-dbhelper = DBHelper(config.DBNAME)
+wise_mk_dir_for_file(settings.DBPATH)
+dbhelper = DBHelper(settings.DBNAME)
 
 class Proxy(object):
     def __init__(self, ip, port, country = "N/A"):

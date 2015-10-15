@@ -1,13 +1,14 @@
-from proxymaid import config
+from proxymaid import settings
 import os
-config.DBPATH = os.path.join(os.path.dirname(config.DBPATH), "test_proxy.db")
-config.DBNAME = "sqlite:///" + config.DBPATH
+#settings.DBPATH = os.path.join(os.path.dirname(settings.DBPATH), "test_proxy.db")
+#settings.DBNAME = "sqlite:///" + settings.DBPATH
 
-from proxymaid.proxy import Proxy, ProxyPool, ProxyModel, dbhelper
+from proxymaid.proxy import Proxy, ProxyPool, ProxyModel
 import pytest
 
 @pytest.fixture(scope="function")
 def setup(request):
+    from proxymaid.proxy import dbhelper
     dbhelper.drop_tables()
     dbhelper.create_tables()
     def fin():

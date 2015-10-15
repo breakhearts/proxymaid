@@ -9,8 +9,7 @@ if __name__ == "__main__":
                         help='maximum unavailable count of a proxy, if exceed this count, proxy will be delete from pool')
     args = parser.parse_args()
     kwargs = {}
-    if args.interval:
-        if args.interval:kwargs["interval_second"] = args.interval
-        if args.interval:kwargs["max_latency"] = args.latency
-        if args.max_unavailable_count:kwargs["max_unavailable_count"] = args.max_unavailable_count
+    if args.interval:kwargs["interval_second"] = args.interval
+    if args.interval:kwargs["max_latency"] = args.latency
+    if args.max_unavailable_count:kwargs["max_unavailable_count"] = args.max_unavailable_count
     start_proxy_pool_service(**kwargs)

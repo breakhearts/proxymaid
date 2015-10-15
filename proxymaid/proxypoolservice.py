@@ -23,7 +23,7 @@ class ProxyPoolHandler:
             logger.debug_class_fun(ProxyPoolHandler.__name__, "req proxy ok, proxy_url = %s", p.proxy_url())
         else:
             logger.debug_class_fun(ProxyPoolHandler.__name__, "req proxy failed")
-        return p
+        return p.proxy_url()
 
     def free_proxy(self, proxy_url, latency):
         logger.debug_class_fun(ProxyPoolHandler.__name__, "free proxy, proxy_url = %s, latency = %02f", proxy_url, latency)
