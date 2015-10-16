@@ -1,8 +1,3 @@
-from proxymaid import settings
-import os
-#settings.DBPATH = os.path.join(os.path.dirname(settings.DBPATH), "test_proxy.db")
-#settings.DBNAME = "sqlite:///" + settings.DBPATH
-
 from proxymaid.proxy import Proxy, ProxyPool, ProxyModel
 import pytest
 
