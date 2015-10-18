@@ -27,6 +27,13 @@ class Iface:
     """
     pass
 
+  def has_proxy(self, proxy_url):
+    """
+    Parameters:
+     - proxy_url
+    """
+    pass
+
   def req_proxy(self, url):
     """
     Parameters:
@@ -82,6 +89,37 @@ class Client(Iface):
     result.read(iprot)
     iprot.readMessageEnd()
     return
+
+  def has_proxy(self, proxy_url):
+    """
+    Parameters:
+     - proxy_url
+    """
+    self.send_has_proxy(proxy_url)
+    return self.recv_has_proxy()
+
+  def send_has_proxy(self, proxy_url):
+    self._oprot.writeMessageBegin('has_proxy', TMessageType.CALL, self._seqid)
+    args = has_proxy_args()
+    args.proxy_url = proxy_url
+    args.write(self._oprot)
+    self._oprot.writeMessageEnd()
+    self._oprot.trans.flush()
+
+  def recv_has_proxy(self):
+    iprot = self._iprot
+    (fname, mtype, rseqid) = iprot.readMessageBegin()
+    if mtype == TMessageType.EXCEPTION:
+      x = TApplicationException()
+      x.read(iprot)
+      iprot.readMessageEnd()
+      raise x
+    result = has_proxy_result()
+    result.read(iprot)
+    iprot.readMessageEnd()
+    if result.success is not None:
+      return result.success
+    raise TApplicationException(TApplicationException.MISSING_RESULT, "has_proxy failed: unknown result");
 
   def req_proxy(self, url):
     """
@@ -151,6 +189,7 @@ class Processor(Iface, TProcessor):
     self._handler = handler
     self._processMap = {}
     self._processMap["spot_proxy"] = Processor.process_spot_proxy
+    self._processMap["has_proxy"] = Processor.process_has_proxy
     self._processMap["req_proxy"] = Processor.process_req_proxy
     self._processMap["free_proxy"] = Processor.process_free_proxy
 
@@ -176,6 +215,17 @@ class Processor(Iface, TProcessor):
     result = spot_proxy_result()
     self._handler.spot_proxy(args.ip, args.port, args.country)
     oprot.writeMessageBegin("spot_proxy", TMessageType.REPLY, seqid)
+    result.write(oprot)
+    oprot.writeMessageEnd()
+    oprot.trans.flush()
+
+  def process_has_proxy(self, seqid, iprot, oprot):
+    args = has_proxy_args()
+    args.read(iprot)
+    iprot.readMessageEnd()
+    result = has_proxy_result()
+    result.success = self._handler.has_proxy(args.proxy_url)
+    oprot.writeMessageBegin("has_proxy", TMessageType.REPLY, seqid)
     result.write(oprot)
     oprot.writeMessageEnd()
     oprot.trans.flush()
@@ -329,6 +379,135 @@ class spot_proxy_result:
 
   def __hash__(self):
     value = 17
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class has_proxy_args:
+  """
+  Attributes:
+   - proxy_url
+  """
+
+  thrift_spec = (
+    None, # 0
+    (1, TType.STRING, 'proxy_url', None, None, ), # 1
+  )
+
+  def __init__(self, proxy_url=None,):
+    self.proxy_url = proxy_url
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 1:
+        if ftype == TType.STRING:
+          self.proxy_url = iprot.readString();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('has_proxy_args')
+    if self.proxy_url is not None:
+      oprot.writeFieldBegin('proxy_url', TType.STRING, 1)
+      oprot.writeString(self.proxy_url)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.proxy_url)
+    return value
+
+  def __repr__(self):
+    L = ['%s=%r' % (key, value)
+      for key, value in self.__dict__.iteritems()]
+    return '%s(%s)' % (self.__class__.__name__, ', '.join(L))
+
+  def __eq__(self, other):
+    return isinstance(other, self.__class__) and self.__dict__ == other.__dict__
+
+  def __ne__(self, other):
+    return not (self == other)
+
+class has_proxy_result:
+  """
+  Attributes:
+   - success
+  """
+
+  thrift_spec = (
+    (0, TType.BOOL, 'success', None, None, ), # 0
+  )
+
+  def __init__(self, success=None,):
+    self.success = success
+
+  def read(self, iprot):
+    if iprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and isinstance(iprot.trans, TTransport.CReadableTransport) and self.thrift_spec is not None and fastbinary is not None:
+      fastbinary.decode_binary(self, iprot.trans, (self.__class__, self.thrift_spec))
+      return
+    iprot.readStructBegin()
+    while True:
+      (fname, ftype, fid) = iprot.readFieldBegin()
+      if ftype == TType.STOP:
+        break
+      if fid == 0:
+        if ftype == TType.BOOL:
+          self.success = iprot.readBool();
+        else:
+          iprot.skip(ftype)
+      else:
+        iprot.skip(ftype)
+      iprot.readFieldEnd()
+    iprot.readStructEnd()
+
+  def write(self, oprot):
+    if oprot.__class__ == TBinaryProtocol.TBinaryProtocolAccelerated and self.thrift_spec is not None and fastbinary is not None:
+      oprot.trans.write(fastbinary.encode_binary(self, (self.__class__, self.thrift_spec)))
+      return
+    oprot.writeStructBegin('has_proxy_result')
+    if self.success is not None:
+      oprot.writeFieldBegin('success', TType.BOOL, 0)
+      oprot.writeBool(self.success)
+      oprot.writeFieldEnd()
+    oprot.writeFieldStop()
+    oprot.writeStructEnd()
+
+  def validate(self):
+    return
+
+
+  def __hash__(self):
+    value = 17
+    value = (value * 31) ^ hash(self.success)
     return value
 
   def __repr__(self):

@@ -17,13 +17,19 @@ class ProxyPoolHandler:
             logger.debug_class_fun(ProxyPoolHandler.__name__,"new proxy, proxy_url = %s", p.proxy_url())
             self.proxy_pool.add_proxy(p)
 
+    def has_proxy(self, proxy_url):
+        return self.proxy_pool.has_proxy(proxy_url)
+
     def req_proxy(self, url):
         p = self.proxy_pool.req_proxy(url)
         if p:
             logger.debug_class_fun(ProxyPoolHandler.__name__, "req proxy ok, proxy_url = %s", p.proxy_url())
         else:
             logger.debug_class_fun(ProxyPoolHandler.__name__, "req proxy failed")
-        return p.proxy_url()
+        if p :
+            return p.proxy_url()
+        else:
+            return ""
 
     def free_proxy(self, proxy_url, latency):
         logger.debug_class_fun(ProxyPoolHandler.__name__, "free proxy, proxy_url = %s, latency = %02f", proxy_url, latency)

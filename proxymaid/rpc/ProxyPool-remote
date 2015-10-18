@@ -25,6 +25,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print('')
   print('Functions:')
   print('  void spot_proxy(string ip, i32 port, string country)')
+  print('  bool has_proxy(string proxy_url)')
   print('  string req_proxy(string url)')
   print('  void free_proxy(string proxy_url, double latency)')
   print('')
@@ -88,6 +89,12 @@ if cmd == 'spot_proxy':
     print('spot_proxy requires 3 args')
     sys.exit(1)
   pp.pprint(client.spot_proxy(args[0],eval(args[1]),args[2],))
+
+elif cmd == 'has_proxy':
+  if len(args) != 1:
+    print('has_proxy requires 1 args')
+    sys.exit(1)
+  pp.pprint(client.has_proxy(args[0],))
 
 elif cmd == 'req_proxy':
   if len(args) != 1:

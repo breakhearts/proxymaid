@@ -4,6 +4,7 @@ from common.model import DBHelper
 import settings
 from sqlalchemy import Column, String, Integer
 from common.utility import wise_mk_dir_for_file
+import requests
 
 wise_mk_dir_for_file(settings.DBPATH)
 dbhelper = DBHelper(settings.DBNAME)
@@ -152,7 +153,6 @@ class ProxyPool(object):
     def req_proxy(self, url):
         from urlparse import urlparse
         netloc = urlparse(url).netloc
-        t = None
         busy_queue = PriorityQueue()
         lazy_queue = PriorityQueue()
         index = 0
@@ -204,3 +204,15 @@ class ProxyPool(object):
                 p.unavailable_count += 1
             if p.unavailable_count >= self.settings["max_unavailable_count"]:
                 self.del_proxy(proxy_url)
+
+def proxy_request(url, proxy_url, user_agent=None, timeout=None):
+    proxies = {
+        "http": proxy_url
+    }
+    headers = {}
+    if user_agent:
+        headers["user-agent"] = user_agent
+    if timeout:
+        return requests.get(url, proxies=proxies, headers=headers, timeout=timeout)
+    else:
+        return requests.get(url, proxies=proxies, headers=headers)
