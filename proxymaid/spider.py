@@ -73,7 +73,7 @@ def spider_page(page_url, parse):
                 logger.debug_fun("get country failed, proxy_url = %s", proxy_url)
                 break
             try:
-                client.spot_new_proxy(ip, port, country)
+                client.spot_proxy(ip, port, country)
             except:
                 logger.traceback()
                 logger.debug_fun("spot new proxy failed, ip = %s, port = %d, country = %s", ip, port, country)

@@ -69,6 +69,8 @@ class ProxyModel(dbhelper.get_base_class()):
         session.commit()
         session.close()
 
+dbhelper.create_tables()
+
 class ProxyPool(object):
     class ProxyMeta(object):
         def __init__(self, proxy):
