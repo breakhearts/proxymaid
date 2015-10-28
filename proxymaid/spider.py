@@ -9,6 +9,7 @@ import socket
 from proxy import Proxy
 
 logger = Logger(settings.LOG_ROOT, "proxy_spider")
+validator_logger = Logger(settings.LOG_ROOT, "proxy_validator")
 
 def validate_proxy(proxy_url):
     for v_url in settings.PROXY_VALIDATION_URLS:
@@ -80,3 +81,17 @@ def spider_page(page_url, parse):
                 break
             logger.debug_fun("spot new proxy, ip = %s, port = %d, country = %s", ip, port, country)
         break
+
+def validate_all_proxies():
+    client = ProxyPoolClient()
+    try:
+        client.open()
+        validator_logger.debug_fun("connect ok")
+    except:
+        logger.traceback()
+        validator_logger.debug_fun("connect failed, quit")
+        return
+    try:
+        pass
+    except:
+        pass

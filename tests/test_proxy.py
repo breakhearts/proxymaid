@@ -125,3 +125,24 @@ class TestProxyPool:
         proxypool.update_proxy_status(p1.proxy_url(), False)
         assert len(ProxyModel.load_all()) == 4
         assert proxypool.count() == 4
+
+    def test_req_for_validate(self, setup):
+        p1 = Proxy(ip="127.0.0.1", port=80)
+        p2 = Proxy(ip="127.0.0.1", port=8080)
+        p3 = Proxy(ip="127.0.0.2", port=80)
+        p4 = Proxy(ip="127.0.0.2", port=8080)
+        proxypool = ProxyPool()
+        proxypool.add_proxy(p1)
+        proxypool.add_proxy(p2)
+        proxypool.add_proxy(p3)
+        proxypool.add_proxy(p4)
+        p = proxypool.req_proxy_for_validator()
+        assert p == p1.proxy_url()
+        p = proxypool.req_proxy_for_validator()
+        assert p == p2.proxy_url()
+        p = proxypool.req_proxy_for_validator()
+        assert p == p3.proxy_url()
+        p = proxypool.req_proxy_for_validator()
+        assert p == p4.proxy_url()
+        p = proxypool.req_proxy_for_validator()
+        assert p == p1.proxy_url()

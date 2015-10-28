@@ -83,10 +83,9 @@ class ProxyPool(object):
             self.unavailable_count = 0
 
     def __init__(self, settings = None):
-        self.proxy_queue_set = [
-            Queue(),
-            Queue()
-        ]
+        self.proxy_queue = []
+        self.proxy_queue_cursor = 0
+        self.proxy_queue_validator_cursor = 0
         self.proxy_meta_map = {}
         self.current_queue_index = 0
         self.settings = {
@@ -113,26 +112,24 @@ class ProxyPool(object):
         return len(self.proxy_meta_map)
 
     def proxy_in_queue_count(self):
-        return self.proxy_queue_set[0].qsize() + self.proxy_queue_set[1].qsize()
+        return len(self.proxy_queue)
 
     def get_proxy_from_queue(self):
-        if self.proxy_queue_set[self.current_queue_index].empty():
-            if self.proxy_queue_set[self.backup_queue_index()].empty():
+        while True:
+            if len(self.proxy_queue) == 0:
                 return None
+            proxy_url = self.proxy_queue[self.proxy_queue_cursor]
+            if proxy_url in self.proxy_meta_map:
+                self.proxy_queue_cursor = (self.proxy_queue_cursor + 1) % len(self.proxy_queue)
+                return proxy_url
             else:
-                self.current_queue_index = self.backup_queue_index()
-        proxy_url = self.proxy_queue_set[self.current_queue_index].get_nowait()
-        if proxy_url in self.proxy_meta_map:
-            self.proxy_queue_set[self.backup_queue_index()].put_nowait(proxy_url)
-        return proxy_url
+                del self.proxy_queue[self.proxy_queue]
 
-    def put_proxy_to_queue(self, proxy_url):
-        self.proxy_queue_set[self.backup_queue_index()].put_nowait(proxy_url)
 
     def __add_proxy(self, proxy):
         if proxy.proxy_url() not in self.proxy_meta_map:
             self.proxy_meta_map[proxy.proxy_url()] = ProxyPool.ProxyMeta(proxy)
-            self.proxy_queue_set[self.backup_queue_index()].put_nowait(proxy.proxy_url())
+            self.proxy_queue.append(proxy.proxy_url())
 
     def add_proxy(self, proxy):
         self.__add_proxy(proxy)
@@ -206,6 +203,13 @@ class ProxyPool(object):
                 p.unavailable_count += 1
             if p.unavailable_count >= self.settings["max_unavailable_count"]:
                 self.del_proxy(proxy_url)
+
+    def req_proxy_for_validator(self):
+        if self.proxy_queue_validator_cursor >= len(self.proxy_queue):
+            self.proxy_queue_validator_cursor = 0
+        p = self.proxy_queue[self.proxy_queue_validator_cursor]
+        self.proxy_queue_validator_cursor = (self.proxy_queue_validator_cursor + 1) % len(self.proxy_queue)
+        return p
 
 def proxy_request(url, proxy_url, user_agent=None, timeout=None):
     proxies = {

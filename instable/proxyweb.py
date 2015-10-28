@@ -82,13 +82,10 @@ class ProxySpiderServer(SimpleServer):
         spider_page("http://www.kuaidaili.com/proxylist/1/", parse_kuai_page)
         spider_page("http://www.xicidaili.com", parse_xicidaili_page)
         spider_page("http://free-proxy-list.net/", parse_free_proxy_list_page)
-        spider_page("http://www.gatherproxy.com/proxylist/anonymity/?t=Anonymous", parse_gather_proxy)
-        spider_page("http://www.gatherproxy.com/proxylist/anonymity/?t=Elite", parse_free_proxy_list_page)
 
     def after_run(self):
         import time
         time.sleep(60 * 30)
 
-if __name__ == "__main__":
-    server = ProxySpiderServer()
-    server.start()
+    def tear_down(self):
+        logger.debug_class_fun(ProxySpiderServer.__name__, "gracefully quit")
