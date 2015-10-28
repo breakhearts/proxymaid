@@ -204,7 +204,7 @@ class ProxyPool(object):
             if p.unavailable_count >= self.settings["max_unavailable_count"]:
                 self.del_proxy(proxy_url)
 
-    def req_proxy_for_validator(self):
+    def req_proxy_for_validate(self):
         if self.proxy_queue_validator_cursor >= len(self.proxy_queue):
             self.proxy_queue_validator_cursor = 0
         p = self.proxy_queue[self.proxy_queue_validator_cursor]

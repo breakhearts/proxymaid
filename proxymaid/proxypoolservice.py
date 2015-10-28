@@ -35,7 +35,12 @@ class ProxyPoolHandler:
         logger.debug_class_fun(ProxyPoolHandler.__name__, "free proxy, proxy_url = %s, latency = %02f", proxy_url, latency)
         return self.proxy_pool.free_proxy(proxy_url, latency)
 
-def start_proxy_pool_service(**kwargs):
+    def req_proxy_for_validate(self):
+        p = self.proxy_pool.req_proxy_for_validate()
+        logger.debug_class_fun(ProxyPoolHandler.__name__, "request ok, proxy_url = %s", p)
+        return p
+
+def run_proxy_pool_service(**kwargs):
     proxy_pool = ProxyPool(kwargs)
     import rpc.ProxyPool
     from thrift.transport import TSocket, TTransport

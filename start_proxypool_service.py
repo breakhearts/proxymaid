@@ -1,4 +1,4 @@
-from proxymaid.proxypoolservice import start_proxy_pool_service
+from proxymaid.proxypoolservice import run_proxy_pool_service
 import argparse
 
 if __name__ == "__main__":
@@ -12,4 +12,4 @@ if __name__ == "__main__":
     if args.interval:kwargs["interval_second"] = args.interval
     if args.interval:kwargs["max_latency"] = args.latency
     if args.max_unavailable_count:kwargs["max_unavailable_count"] = args.max_unavailable_count
-    start_proxy_pool_service(**kwargs)
+    run_proxy_pool_service(**kwargs)

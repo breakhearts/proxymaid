@@ -1,5 +1,5 @@
 from multiprocessing import Process
-from proxymaid.proxypoolservice import start_proxy_pool_service
+from proxymaid.proxypoolservice import run_proxy_pool_service
 from proxymaid.proxypoolclient import ProxyPoolClient
 import pytest
 
@@ -8,7 +8,7 @@ def setup(request):
     from proxymaid.proxy import dbhelper
     dbhelper.drop_tables()
     dbhelper.create_tables()
-    p = Process(target=start_proxy_pool_service)
+    p = Process(target=run_proxy_pool_service)
     p.daemon = True
     p.start()
     def fin():
@@ -25,4 +25,6 @@ def test_client(setup):
     p = client.req_proxy('http://www.baidu.com')
     assert p == ""
     client.free_proxy("127.0.0.1:8080", 0.1)
+    p = client.req_proxy_for_validate()
+    assert p == "127.0.0.1:8080"
     client.close()
