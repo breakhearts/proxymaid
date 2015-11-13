@@ -44,8 +44,8 @@ class ProxyPoolHandler:
             return ""
 
     def update_proxy_status(self, proxy_url, available):
-        self.proxy_pool.update_proxy_status(proxy_url, available)
-        logger.debug_class_fun(ProxyPoolHandler.__name__, "update ok, available = %s", available)
+        deleted = self.proxy_pool.update_proxy_status(proxy_url, available)
+        logger.debug_class_fun(ProxyPoolHandler.__name__, "update ok, available = %s, deleted = %s", available, deleted)
 
 def run_proxy_pool_service(**kwargs):
     proxy_pool = ProxyPool(kwargs)

@@ -193,7 +193,7 @@ class ProxyPool(object):
 
     def update_proxy_status(self, proxy_url, available):
         if proxy_url not in self.proxy_meta_map:
-            return
+            return False
         p = self.proxy_meta_map[proxy_url]
         if available:
             p.unavailable_count = 0
@@ -204,6 +204,8 @@ class ProxyPool(object):
                 p.unavailable_count += 1
             if p.unavailable_count >= self.settings["max_unavailable_count"]:
                 self.del_proxy(proxy_url)
+                return True
+        return False
 
     def req_proxy_for_validate(self):
         if len(self.proxy_queue) == 0:
