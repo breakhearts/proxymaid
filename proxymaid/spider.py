@@ -85,7 +85,6 @@ def spider_page(page_url, parse):
                 logger.debug_fun("spot new proxy failed, ip = %s, port = %d, country = %s", ip, port, country)
                 break
             logger.debug_fun("spot new proxy, ip = %s, port = %d, country = %s", ip, port, country)
-        break
 
 def validate_all_proxies():
     client = ProxyPoolClient()
