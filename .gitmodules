@@ -4,3 +4,6 @@
 [submodule "proxymaid/common"]
 	path = proxymaid/common
 	url = https://github.com/breakhearts/maid-common.git
+[submodule "proxymaid/proxymaid_rpc"]
+	path = proxymaid/proxymaid_rpc
+	url = https://github.com/breakhearts/proxymaid-rpc.git

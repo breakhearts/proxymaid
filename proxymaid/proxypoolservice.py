@@ -51,12 +51,12 @@ def run_proxy_pool_service(**kwargs):
     proxy_pool = ProxyPool(kwargs)
     proxy_pool.load()
     logger.debug("proxy_pool load ok, count = %d", proxy_pool.count())
-    import rpc.ProxyPool
     from thrift.transport import TSocket, TTransport
     from thrift.server import TServer
     from thrift.protocol import TBinaryProtocol
     handler = ProxyPoolHandler(proxy_pool)
-    processor = rpc.ProxyPool.Processor(handler)
+    import proxymaid_rpc.rpc.ProxyPool
+    processor = proxymaid_rpc.rpc.ProxyPool.Processor(handler)
     transport = TSocket.TServerSocket(port=settings.PROXY_POOL_LISTEN_PORT)
     tfactory = TTransport.TBufferedTransportFactory()
     pfactory = TBinaryProtocol.TBinaryProtocolFactory()
