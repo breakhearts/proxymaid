@@ -18,13 +18,13 @@ def validate_proxy(proxy_url):
             r = proxy_request(v_url, proxy_url, utility.random_ua(),
                               timeout = settings.VALIDATION_TIMEOUT)
         except requests.exceptions.ConnectionError:
-            logger.traceback()
+            #logger.traceback()
             continue
         except requests.exceptions.Timeout:
-            logger.traceback()
+            #logger.traceback()
             continue
         except socket.timeout:
-            logger.traceback()
+            #logger.traceback()
             continue
         except:
             logger.traceback()
