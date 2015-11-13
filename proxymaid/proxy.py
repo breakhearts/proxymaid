@@ -20,7 +20,7 @@ class Proxy(object):
 
     @staticmethod
     def make_proxy_url(ip, port):
-        return "%s:%d" % (ip, port)
+        return "http://%s:%d" % (ip, port)
 
     @staticmethod
     def split_proxy_url(proxy_url):
