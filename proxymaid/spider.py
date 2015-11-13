@@ -1,12 +1,15 @@
-from common import utility
-import requests
-from common.logger import Logger
-from proxypoolclient import ProxyPoolClient
-from thrift import Thrift
-import settings
 import socket
+
+import requests
+from thrift import Thrift
+
+from common import utility
+from common.logger import Logger
+from proxymaid.proxymaid_rpc.proxypoolclient import ProxyPoolClient
+import settings
 from proxy import Proxy
 from common.server import SimpleServer
+
 
 logger = Logger(settings.LOG_ROOT, "proxy_spider")
 validator_logger = Logger(settings.LOG_ROOT, "proxy_validator")

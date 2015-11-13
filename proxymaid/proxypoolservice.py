@@ -57,7 +57,8 @@ def run_proxy_pool_service(**kwargs):
     handler = ProxyPoolHandler(proxy_pool)
     import proxymaid_rpc.rpc.ProxyPool
     processor = proxymaid_rpc.rpc.ProxyPool.Processor(handler)
-    transport = TSocket.TServerSocket(port=settings.PROXY_POOL_LISTEN_PORT)
+    import proxymaid_rpc.settings
+    transport = TSocket.TServerSocket(port=proxymaid_rpc.settings.PROXY_POOL_LISTEN_PORT)
     tfactory = TTransport.TBufferedTransportFactory()
     pfactory = TBinaryProtocol.TBinaryProtocolFactory()
     server = TServer.TThreadedServer(processor, transport, tfactory, pfactory)

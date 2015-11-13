@@ -1,7 +1,10 @@
 from multiprocessing import Process
-from proxymaid.proxypoolservice import run_proxy_pool_service
-from proxymaid.proxypoolclient import ProxyPoolClient
+
 import pytest
+
+from proxymaid.proxypoolservice import run_proxy_pool_service
+from proxymaid.proxymaid_rpc.proxypoolclient import ProxyPoolClient
+
 
 @pytest.fixture(scope="function")
 def setup(request):
