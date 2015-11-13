@@ -38,10 +38,19 @@ class ProxyPoolHandler:
     def req_proxy_for_validate(self):
         p = self.proxy_pool.req_proxy_for_validate()
         logger.debug_class_fun(ProxyPoolHandler.__name__, "request ok, proxy_url = %s", p)
-        return p
+        if p:
+            return p
+        else:
+            return ""
+
+    def update_proxy_status(self, proxy_url, available):
+        self.proxy_pool.update_proxy_status(proxy_url, available)
+        logger.debug_class_fun(ProxyPoolHandler.__name__, "update ok, available = %s", available)
 
 def run_proxy_pool_service(**kwargs):
     proxy_pool = ProxyPool(kwargs)
+    proxy_pool.load()
+    logger.debug("proxy_pool load ok, count = %d", proxy_pool.count())
     import rpc.ProxyPool
     from thrift.transport import TSocket, TTransport
     from thrift.server import TServer

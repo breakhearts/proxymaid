@@ -76,6 +76,7 @@ class ProxyPool(object):
         def __init__(self, proxy):
             self.proxy = proxy
             self.last_used_time = None
+            self.last_test_time = None
             # key:netloc, value:latency second
             self.latency = {}
             # master netloc who are using this proxy
@@ -103,7 +104,7 @@ class ProxyPool(object):
     def load(self):
         for pm in ProxyModel.load_all():
             p = Proxy(ip=pm.ip, port=pm.port, country=pm.country)
-            self.add_proxy(p)
+            self.__add_proxy(p)
 
     def backup_queue_index(self):
         return self.current_queue_index == 0 and 1 or 0
@@ -205,11 +206,18 @@ class ProxyPool(object):
                 self.del_proxy(proxy_url)
 
     def req_proxy_for_validate(self):
+        if len(self.proxy_queue) == 0:
+            return None
         if self.proxy_queue_validator_cursor >= len(self.proxy_queue):
             self.proxy_queue_validator_cursor = 0
         p = self.proxy_queue[self.proxy_queue_validator_cursor]
-        self.proxy_queue_validator_cursor = (self.proxy_queue_validator_cursor + 1) % len(self.proxy_queue)
-        return p
+        if p in self.proxy_meta_map:
+            meta = self.proxy_meta_map[p]
+            if not meta.last_test_time or (datetime.utcnow() - meta.last_test_time).total_seconds() > settings.VALIDATION_INTERVAL:
+                meta.last_test_time = datetime.utcnow()
+                self.proxy_queue_validator_cursor = (self.proxy_queue_validator_cursor + 1) % len(self.proxy_queue)
+                return p
+        return None
 
 def proxy_request(url, proxy_url, user_agent=None, timeout=None):
     proxies = {

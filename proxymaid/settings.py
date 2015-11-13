@@ -14,5 +14,7 @@ PROXY_VALIDATION_URLS = [
     "http://www.google.com",
     "http://www.bing.com"
 ]
+
 VALIDATION_TIMEOUT = 3
+VALIDATION_INTERVAL = 30 * 60
 PROXY_MAX_DELAY = 5

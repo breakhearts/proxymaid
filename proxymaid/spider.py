@@ -7,6 +7,7 @@ import settings
 from proxy import proxy_request
 import socket
 from proxy import Proxy
+from common.server import SimpleServer
 
 logger = Logger(settings.LOG_ROOT, "proxy_spider")
 validator_logger = Logger(settings.LOG_ROOT, "proxy_validator")
@@ -88,10 +89,31 @@ def validate_all_proxies():
         client.open()
         validator_logger.debug_fun("connect ok")
     except:
-        logger.traceback()
+        validator_logger.traceback()
         validator_logger.debug_fun("connect failed, quit")
         return
     try:
-        pass
+        while True:
+            p = client.req_proxy_for_validate()
+            if p=="":
+                break
+            validator_logger.debug("start validate %s", p)
+            ok, elapsed = validate_proxy(p)
+            validator_logger.debug("validate ok, ok = %s, elapsed = %f", ok, elapsed)
+            client.update_proxy_status(p, ok)
     except:
-        pass
+        logger.traceback()
+        return
+    validator_logger.debug("validate all finished")
+
+class ProxyTestServer(SimpleServer):
+
+    def run(self):
+        validate_all_proxies()
+
+    def after_run(self):
+        import time
+        time.sleep(60 * 30)
+
+    def tear_down(self):
+        validator_logger.debug_class_fun(ProxyTestServer.__name__, "gracefully quit")

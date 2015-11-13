@@ -29,6 +29,7 @@ if len(sys.argv) <= 1 or sys.argv[1] == '--help':
   print('  string req_proxy(string url)')
   print('  void free_proxy(string proxy_url, double latency)')
   print('  string req_proxy_for_validate()')
+  print('  void update_proxy_status(string proxy_url, bool is_valid)')
   print('')
   sys.exit(0)
 
@@ -114,6 +115,12 @@ elif cmd == 'req_proxy_for_validate':
     print('req_proxy_for_validate requires 0 args')
     sys.exit(1)
   pp.pprint(client.req_proxy_for_validate())
+
+elif cmd == 'update_proxy_status':
+  if len(args) != 2:
+    print('update_proxy_status requires 2 args')
+    sys.exit(1)
+  pp.pprint(client.update_proxy_status(args[0],eval(args[1]),))
 
 else:
   print('Unrecognized method %s' % cmd)

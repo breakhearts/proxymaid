@@ -3,7 +3,7 @@
 from lxml import etree
 from proxymaid.common.logger import Logger
 from proxymaid import settings
-from proxymaid.spider import spider_page
+from proxymaid.spider import spider_page, validate_all_proxies
 from proxymaid.common.server import SimpleServer
 
 logger = Logger(settings.LOG_ROOT, "proxy_spider")
