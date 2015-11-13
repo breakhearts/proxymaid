@@ -4,7 +4,6 @@ from common.logger import Logger
 from proxypoolclient import ProxyPoolClient
 from thrift import Thrift
 import settings
-from proxy import proxy_request
 import socket
 from proxy import Proxy
 from common.server import SimpleServer
@@ -15,7 +14,7 @@ validator_logger = Logger(settings.LOG_ROOT, "proxy_validator")
 def validate_proxy(proxy_url):
     for v_url in settings.PROXY_VALIDATION_URLS:
         try:
-            r = proxy_request(v_url, proxy_url, utility.random_ua(),
+            r = utility.proxy_request(v_url, proxy_url, utility.random_ua(),
                               timeout = settings.VALIDATION_TIMEOUT)
         except requests.exceptions.ConnectionError:
             #logger.traceback()

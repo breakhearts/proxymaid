@@ -220,15 +220,3 @@ class ProxyPool(object):
                 self.proxy_queue_validator_cursor = (self.proxy_queue_validator_cursor + 1) % len(self.proxy_queue)
                 return p
         return None
-
-def proxy_request(url, proxy_url, user_agent=None, timeout=None):
-    proxies = {
-        "http": proxy_url
-    }
-    headers = {}
-    if user_agent:
-        headers["user-agent"] = user_agent
-    if timeout:
-        return requests.get(url, proxies=proxies, headers=headers, timeout=timeout)
-    else:
-        return requests.get(url, proxies=proxies, headers=headers)
