@@ -58,3 +58,7 @@ target/
 
 # PyCharm
 .idea/
+
+# Local directories
+logs/
+data/

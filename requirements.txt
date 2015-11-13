@@ -1,0 +1,4 @@
+thrift
+sqlalchemy
+requests
+lxml
