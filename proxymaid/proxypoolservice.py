@@ -10,7 +10,9 @@ class ProxyPoolHandler:
         self.proxy_pool = proxy_pool
 
     def spot_proxy(self, ip, port, country):
-        p = Proxy(ip=ip, port=port, country=country.decode('utf-8'))
+        if country:
+            country=country.decode('utf-8')
+        p = Proxy(ip=ip, port=port, country=country)
         if self.proxy_pool.has_proxy(p.proxy_url()):
             logger.debug_class_fun(ProxyPoolHandler.__name__, "proxy exists, proxy_url = %s", p.proxy_url())
         else:

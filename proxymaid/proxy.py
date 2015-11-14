@@ -23,7 +23,7 @@ class Proxy(object):
 
     @staticmethod
     def split_proxy_url(proxy_url):
-        return proxy_url.split(":")
+        return proxy_url.split("://")[-1].split(":")
 
     def proxy_url(self):
         return Proxy.make_proxy_url(self.ip, self.port)
