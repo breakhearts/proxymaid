@@ -123,7 +123,7 @@ class ProxyPool(object):
                 self.proxy_queue_cursor = (self.proxy_queue_cursor + 1) % len(self.proxy_queue)
                 return proxy_url
             else:
-                del self.proxy_queue[self.proxy_queue]
+                del self.proxy_queue[self.proxy_queue_cursor]
 
 
     def __add_proxy(self, proxy):
@@ -212,10 +212,14 @@ class ProxyPool(object):
         if self.proxy_queue_validator_cursor >= len(self.proxy_queue):
             self.proxy_queue_validator_cursor = 0
         p = self.proxy_queue[self.proxy_queue_validator_cursor]
-        if p in self.proxy_meta_map:
-            meta = self.proxy_meta_map[p]
-            if not meta.last_test_time or (datetime.utcnow() - meta.last_test_time).total_seconds() > settings.VALIDATION_INTERVAL:
-                meta.last_test_time = datetime.utcnow()
-                self.proxy_queue_validator_cursor = (self.proxy_queue_validator_cursor + 1) % len(self.proxy_queue)
-                return p
+        while len(self.proxy_queue) > 0:
+            if p in self.proxy_meta_map:
+                meta = self.proxy_meta_map[p]
+                if not meta.last_test_time or (datetime.utcnow() - meta.last_test_time).total_seconds() > settings.VALIDATION_INTERVAL:
+                    meta.last_test_time = datetime.utcnow()
+                    self.proxy_queue_validator_cursor = (self.proxy_queue_validator_cursor + 1) % len(self.proxy_queue)
+                    return p
+                break
+            else:
+                del self.proxy_queue[self.proxy_queue_validator_cursor]
         return None
