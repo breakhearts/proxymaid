@@ -211,8 +211,8 @@ class ProxyPool(object):
             return None
         if self.proxy_queue_validator_cursor >= len(self.proxy_queue):
             self.proxy_queue_validator_cursor = 0
-        p = self.proxy_queue[self.proxy_queue_validator_cursor]
         while len(self.proxy_queue) > 0:
+            p = self.proxy_queue[self.proxy_queue_validator_cursor]
             if p in self.proxy_meta_map:
                 meta = self.proxy_meta_map[p]
                 if not meta.last_test_time or (datetime.utcnow() - meta.last_test_time).total_seconds() > settings.VALIDATION_INTERVAL:
@@ -222,4 +222,5 @@ class ProxyPool(object):
                 break
             else:
                 del self.proxy_queue[self.proxy_queue_validator_cursor]
+                self.proxy_queue_validator_cursor = self.proxy_queue_validator_cursor % len(self.proxy_queue)
         return None
