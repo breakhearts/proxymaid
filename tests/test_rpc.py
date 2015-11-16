@@ -1,7 +1,10 @@
 from multiprocessing import Process
-from proxymaid.proxypoolservice import run_proxy_pool_service
-from proxymaid.proxypoolclient import ProxyPoolClient
+
 import pytest
+
+from proxymaid.proxypoolservice import run_proxy_pool_service
+from proxymaid.proxymaid_rpc.proxypoolclient import ProxyPoolClient
+
 
 @pytest.fixture(scope="function")
 def setup(request):
@@ -21,10 +24,10 @@ def test_client(setup):
     client.open()
     client.spot_proxy('127.0.0.1', 8080, 'China')
     p = client.req_proxy('http://www.baidu.com')
-    assert p == "127.0.0.1:8080"
+    assert p == "http://127.0.0.1:8080"
     p = client.req_proxy('http://www.baidu.com')
     assert p == ""
     client.free_proxy("127.0.0.1:8080", 0.1)
     p = client.req_proxy_for_validate()
-    assert p == "127.0.0.1:8080"
+    assert p == "http://127.0.0.1:8080"
     client.close()

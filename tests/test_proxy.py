@@ -145,4 +145,4 @@ class TestProxyPool:
         p = proxypool.req_proxy_for_validate()
         assert p == p4.proxy_url()
         p = proxypool.req_proxy_for_validate()
-        assert p == p1.proxy_url()
+        assert p == None

@@ -10,7 +10,9 @@ class ProxyPoolHandler:
         self.proxy_pool = proxy_pool
 
     def spot_proxy(self, ip, port, country):
-        p = Proxy(ip=ip, port=port, country=country.decode('utf-8'))
+        if country:
+            country=country.decode('utf-8')
+        p = Proxy(ip=ip, port=port, country=country)
         if self.proxy_pool.has_proxy(p.proxy_url()):
             logger.debug_class_fun(ProxyPoolHandler.__name__, "proxy exists, proxy_url = %s", p.proxy_url())
         else:
@@ -51,13 +53,14 @@ def run_proxy_pool_service(**kwargs):
     proxy_pool = ProxyPool(kwargs)
     proxy_pool.load()
     logger.debug("proxy_pool load ok, count = %d", proxy_pool.count())
-    import rpc.ProxyPool
     from thrift.transport import TSocket, TTransport
     from thrift.server import TServer
     from thrift.protocol import TBinaryProtocol
     handler = ProxyPoolHandler(proxy_pool)
-    processor = rpc.ProxyPool.Processor(handler)
-    transport = TSocket.TServerSocket(port=settings.PROXY_POOL_LISTEN_PORT)
+    import proxymaid_rpc.rpc.ProxyPool
+    processor = proxymaid_rpc.rpc.ProxyPool.Processor(handler)
+    import proxymaid_rpc.settings
+    transport = TSocket.TServerSocket(port=proxymaid_rpc.settings.PROXY_POOL_LISTEN_PORT)
     tfactory = TTransport.TBufferedTransportFactory()
     pfactory = TBinaryProtocol.TBinaryProtocolFactory()
     server = TServer.TThreadedServer(processor, transport, tfactory, pfactory)
