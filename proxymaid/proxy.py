@@ -76,7 +76,7 @@ class ProxyPool(object):
             self.proxy = proxy
             self.last_used_time = None
             self.last_test_time = None
-            # key:netloc, value:latency second
+            # key:netloc, value:(unavailable count, avg latency second)
             self.latency = {}
             # master netloc who are using this proxy
             self.master = None
@@ -89,7 +89,7 @@ class ProxyPool(object):
         self.proxy_meta_map = {}
         self.current_queue_index = 0
         self.settings = {
-            "interval_second": 30,
+            "interval_second": 1,
             "max_latency": 5,
             "max_unavailable_count": 3
         }
@@ -166,9 +166,11 @@ class ProxyPool(object):
                 if proxy_meta.last_used_time and (now - proxy_meta.last_used_time).total_seconds() < self.settings["interval_second"]:
                     busy_queue.put_nowait((proxy_meta.last_used_time, proxy_url))
                     continue
-                if netloc in proxy_meta.latency and proxy_meta.latency[netloc] > self.settings["max_latency"]:
-                    lazy_queue.put_nowait((proxy_meta.latency[netloc], proxy_url))
-                    continue
+                if netloc in proxy_meta.latency and proxy_meta.latency[netloc][0] >= self.settings["max_unavailable_count"]:
+                    import random
+                    if random.randint(1, 10) > 1:
+                        lazy_queue.put_nowait((proxy_meta.latency[netloc], proxy_url))
+                        continue
                 proxy_meta.last_used_time = now
                 proxy_meta.master = netloc
                 return proxy_meta.proxy
@@ -187,7 +189,14 @@ class ProxyPool(object):
         if proxy_url in self.proxy_meta_map:
             proxy_meta = self.proxy_meta_map[proxy_url]
             if proxy_meta.master:
-                proxy_meta.latency[proxy_meta.master] = latency
+                if proxy_meta.master not in proxy_meta.latency:
+                    proxy_meta.latency[proxy_meta.master] = [0, latency == float("inf") and self.settings["max_latency"] or latency]
+                if latency == float("inf"):
+                    proxy_meta.latency[proxy_meta.master][1] = (proxy_meta.latency[proxy_meta.master][1] + self.settings["max_latency"]) / 2
+                    proxy_meta.latency[proxy_meta.master][0] += 1
+                else:
+                    proxy_meta.latency[proxy_meta.master][0] = 0
+                    proxy_meta.latency[proxy_meta.master][1] = (proxy_meta.latency[proxy_meta.master][1] + latency) / 2
             proxy_meta.master = None
 
     def update_proxy_status(self, proxy_url, available):
