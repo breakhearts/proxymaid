@@ -89,7 +89,7 @@ class ProxyPool(object):
         self.proxy_meta_map = {}
         self.current_queue_index = 0
         self.settings = {
-            "interval_second": 1,
+            "interval_second": 30,
             "max_latency": 5,
             "max_unavailable_count": 3
         }
