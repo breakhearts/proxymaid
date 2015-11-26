@@ -65,6 +65,6 @@ def run_proxy_pool_service(**kwargs):
     tfactory = TTransport.TBufferedTransportFactory()
     pfactory = TBinaryProtocol.TBinaryProtocolFactory()
     server = TServer.TThreadedServer(processor, transport, tfactory, pfactory)
-    start_proxy_web(proxy_pool ,8888)
+    start_proxy_web(proxy_pool ,9100)
     logger.debug_fun("start proxy pool service ok")
     server.serve()
