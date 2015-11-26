@@ -1,6 +1,7 @@
 from proxy import ProxyPool, Proxy
 from common.logger import Logger
 import settings
+from proxyweb import start_proxy_web
 
 logger = Logger(settings.LOG_ROOT, "proxy_pool_service")
 thrift_logger = Logger(settings.LOG_ROOT, "thrift.server.TServer")
@@ -64,5 +65,6 @@ def run_proxy_pool_service(**kwargs):
     tfactory = TTransport.TBufferedTransportFactory()
     pfactory = TBinaryProtocol.TBinaryProtocolFactory()
     server = TServer.TThreadedServer(processor, transport, tfactory, pfactory)
+    start_proxy_web(proxy_pool ,8888)
     logger.debug_fun("start proxy pool service ok")
     server.serve()
