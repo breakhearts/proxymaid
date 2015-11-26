@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="../static/css/cms.css"><link>
+</head>
+<body>
+    <table>
+        <thead>
+            <th>PROXY_URL</th><th>last_used_time</th><th>last_test_time</th><th>master</th><th>unavailable_count</th><th>latency</th>
+        </thead>
+        <tbody>
+            {% for proxy_url, meta in proxy_pool.proxy_meta_map.items() %}
+                <tr>
+                    <td>{{ proxy_url }}</td>
+                    <td>{{ meta.last_used_time and meta.last_used_time.strftime("%Y-%m-%d %H:%M:%S") or None }}</td>
+                    <td>{{ meta.last_test_time and meta.last_test_time.strftime("%Y-%m-%d %H:%M:%S") or None }}</td>
+                    <td>{{ meta.master }}</td>
+                    <td>{{ meta.unavailable_count }}</td>
+                    <td>
+                        {% for netloc, (unavailable_count, latency) in meta.latency.items() %}
+                            <p style="padding: 0px;margin: 0px">{{ netloc }}:{{ unavailable_count }}, {{ latency }}</p>
+                        {% end %}
+                    </td>
+                </tr>
+            {% end %}
+        </tbody>
+    </table>
+</body>
+</html>
