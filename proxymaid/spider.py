@@ -15,7 +15,7 @@ logger = Logger(settings.LOG_ROOT, "proxy_spider")
 validator_logger = Logger(settings.LOG_ROOT, "proxy_validator")
 
 def validate_proxy(proxy_url):
-    for v_url in settings.PROXY_VALIDATION_URLS:
+    for v_url,check_str in settings.PROXY_VALIDATION_URLS:
         try:
             r = utility.proxy_request(v_url, proxy_url, utility.random_ua(),
                               timeout = settings.VALIDATION_TIMEOUT)
@@ -34,6 +34,8 @@ def validate_proxy(proxy_url):
         if r.status_code != 200:
             continue
         else:
+            if r.content.find(check_str) == -1:
+                return False, float("inf")
             return True, r.elapsed.total_seconds()
     return False, 0
 
