@@ -8,9 +8,9 @@ LOG_ROOT = ROOT + "/../data/logs"
 
 # validator setting
 PROXY_VALIDATION_URLS = [
-    "http://www.baidu.com",
-    "http://www.google.com",
-    "http://www.bing.com"
+    ("http://www.baidu.com", "hao123.com"),
+    ("http://www.google.com", "mail.google.com"),
+    ("http://www.bing.com", "go.microsoft.com")
 ]
 
 VALIDATION_TIMEOUT = 3
